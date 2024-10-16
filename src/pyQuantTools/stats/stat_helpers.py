@@ -2,13 +2,34 @@
 Statistical Helper Functions
 
 Table of Contents:
-    - calculate_iqr(values: np.ndarray) -> float
-    - calculate_rnq_iqr(values: np.ndarray, iqr: float) -> float
+    - fast_exponential_smoothing(values: np.ndarray) -> float
+    - iqr(values: np.ndarray) -> float
+    - range_iqr_ratio(values: np.ndarray, iqr: float) -> float
     - relative_entropy(p: np.ndarray, q: np.ndarray) -> float
     - simple_stats(values: np.ndarray) -> tuple[int, float, float, float]
 
 """
 import numpy as np
+
+def fast_exponential_smoothing(values: np.ndarray, alpha: float = 0.33333333) -> np.ndarray:
+    """
+    Apply exponential smoothing to an array of values.
+    This is not an EMA, but instead a simple exponential smoothing that applies to an entire array.
+
+    Parameters:
+    - values (np.ndarray): Array of values to smooth.
+    - alpha (float): Smoothing factor (default is 0.33333333).
+
+    Returns:
+    - np.ndarray: Array of smoothed values.
+    """
+    smoothed_values = np.zeros_like(values)
+    smoothed_values[0] = values[0]
+
+    for i in range(1, len(values)):
+        smoothed_values[i] = alpha * values[i] + (1 - alpha) * smoothed_values[i - 1]
+
+    return smoothed_values
 
 def iqr(values: np.ndarray) -> float:
     """
