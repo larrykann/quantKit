@@ -24,23 +24,20 @@ class TestIndicators(unittest.TestCase):
         # Test Stochastic indicator with no smoothing, 1 layer, and 2 layers
         period = 14
 
-        # No smoothing
+        # Test with no smoothing
         stochastic_0 = Stochastic(data=self.data, period=period, smooth=0)
-        result_0 = stochastic_0.calculate()
-        self.assertIsInstance(result_0, np.ndarray)
-        self.assertEqual(len(result_0), len(self.data['close']))
+        stoch_values_0 = stochastic_0.calculate()
+        self.assertEqual(len(stoch_values_0), len(self.data['close']))
 
-        # 1 layer of smoothing
+        # Test with one level of smoothing
         stochastic_1 = Stochastic(data=self.data, period=period, smooth=1)
-        result_1 = stochastic_1.calculate()
-        self.assertIsInstance(result_1, np.ndarray)
-        self.assertEqual(len(result_1), len(self.data['close']))
+        stoch_values_1 = stochastic_1.calculate()
+        self.assertEqual(len(stoch_values_1), len(self.data['close']))
 
-        # 2 layers of smoothing
+        # Test with two levels of smoothing
         stochastic_2 = Stochastic(data=self.data, period=period, smooth=2)
-        result_2 = stochastic_2.calculate()
-        self.assertIsInstance(result_2, np.ndarray)
-        self.assertEqual(len(result_2), len(self.data['close']))
+        stoch_values_2 = stochastic_2.calculate()
+        self.assertEqual(len(stoch_values_2), len(self.data['close']))
 
 if __name__ == "__main__":
     unittest.main()

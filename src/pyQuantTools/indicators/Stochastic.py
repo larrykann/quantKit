@@ -13,7 +13,7 @@ class Stochastic(Indicator):
         closes = self.data['close']
         lows = self.data['low']
         highs = self.data['high']
-        stoch_values = np.zeros(len(closes))
+        stoch_values = np.full(len(closes), np.nan) # Initialize with NaN values.
 
         for i in range(self.period - 1, len(closes)):
             high_period = np.max(highs[i - self.period + 1: i + 1])
