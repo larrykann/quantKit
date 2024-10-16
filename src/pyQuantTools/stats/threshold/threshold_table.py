@@ -25,6 +25,7 @@ def generate_threshold_table(
         A list of tuples, each containing:
             - Threshold (float)
             - Fraction Greater or Equal (float)
+            v
             - Long Profit Factor Above Threshold (float)
             - Short Profit Factor Above Threshold (float)
             - Fraction Less (float)
