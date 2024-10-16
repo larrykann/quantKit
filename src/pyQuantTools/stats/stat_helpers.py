@@ -2,6 +2,7 @@
 Statistical Helper Functions
 
 Table of Contents:
+    - atr(values: np.ndarray) ->
     - fast_exponential_smoothing(values: np.ndarray) -> float
     - iqr(values: np.ndarray) -> float
     - range_iqr_ratio(values: np.ndarray, iqr: float) -> float
@@ -11,7 +12,57 @@ Table of Contents:
 """
 import numpy as np
 
-def fast_exponential_smoothing(values: np.ndarray, alpha: float = 0.33333333) -> np.ndarray:
+#--------------------
+# Average True Range
+#--------------------
+def atr(
+        high_prices: np.ndarray, 
+        low_prices: np.ndarray, 
+        close_prices: np.ndarray, 
+        period: int = 252, 
+        use_log: bool = True) -> np.ndarray:
+    """
+    Calculate the Average True Range (ATR), which is a measure of volatility.
+
+    The ATR is calculated using either the logarithmic or arithmetic difference between
+    the highest, lowest, and closing prices over a specified period. The logarithmic option
+    is often used to better account for percentage changes in price.
+
+    Parameters:
+    - high_prices (np.ndarray): Array of high prices for the period.
+    - low_prices (np.ndarray): Array of low prices for the period.
+    - close_prices (np.ndarray): Array of close prices for the period.
+    - period (int): The lookback period over which to calculate the ATR. Default is 252.
+    - use_log (bool): If True, the ATR is calculated using logarithmic price changes.
+                      If False, arithmetic differences are used. Default is True.
+
+    Returns:
+    - np.ndarray: An array of ATR values for the entire series, with NaN for the initial period.
+    """
+    if use_log:
+        high_log = np.log(high_prices[1:] / high_prices[:-1])
+        low_log = np.log(low_prices[1:] / low_prices[:-1])
+        close_log = np.log(close_prices[1:] / close_prices[:-1])
+
+        tr1 = high_log - low_log
+        tr2 = np.abs(high_log - close_log)
+        tr3 = np.abs(low_log - close_log)
+    else:
+        tr1 = high_prices[1:] - low_prices[1:]
+        tr2 = np.abs(high_prices[1:] - close_prices[:-1])
+        tr3 = np.abs(low_prices[1:] - close_prices[:-1])
+
+    true_ranges = np.maximum(np.maximum(tr1, tr2), tr3)
+
+    atr_values = np.full_like(high_prices, np.nan)
+    for i in range(period, len(high_prices)):
+        atr_values[i] = np.mean(true_ranges[i - period + 1:i + 1])
+
+    return atr_values
+
+def fast_exponential_smoothing(
+        values: np.ndarray, 
+        alpha: float = 0.33333333) -> np.ndarray:
     """
     Apply exponential smoothing to an array of values.
     This is not an EMA, but instead a simple exponential smoothing that applies to an entire array.

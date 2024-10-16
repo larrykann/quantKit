@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from pyQuantTools.stats.stat_helpers import iqr, range_iqr_ratio, relative_entropy, simple_stats, fast_exponential_smoothing
+from pyQuantTools.stats.stat_helpers import iqr, range_iqr_ratio, relative_entropy, simple_stats, fast_exponential_smoothing, atr
 
 class TestStatHelpers(unittest.TestCase):
     def setUp(self):
@@ -9,6 +9,11 @@ class TestStatHelpers(unittest.TestCase):
         self.values = np.random.rand(1000)
         self.small_values = np.random.rand(10)
         self.large_values = np.random.rand(20000)
+
+        # For ATR function
+        self.high_prices = np.random.rand(1000) * 100 + 100  # Random high prices between 100 and 200
+        self.low_prices = self.high_prices - np.random.rand(1000) * 10  # Low prices, 0-10 less than high prices
+        self.close_prices = self.low_prices + np.random.rand(1000) * 5  # Close prices, 0-5 greater than low prices
 
     def test_iqr(self):
         result = iqr(self.values)
@@ -50,6 +55,15 @@ class TestStatHelpers(unittest.TestCase):
         self.assertEqual(len(smoothed_values), len(self.values))
         # Check that the first value of the smoothed array is the same as the original
         self.assertEqual(smoothed_values[0], self.values[0])
+
+    def test_atr(self):
+        period = 14
+        use_log = True
+        atr_values = atr(self.high_prices, self.low_prices, self.close_prices, period=period, use_log=use_log)
+        self.assertIsInstance(atr_values, np.ndarray)
+        self.assertEqual(len(atr_values), len(self.high_prices))  # The ATR length should be the same as the input length
+        self.assertTrue(np.isnan(atr_values[:period]).all())  # The first `period` values should be NaN
+        self.assertFalse(np.isnan(atr_values[period:]).any())  # The rest of the values should not be NaN
 
 if __name__ == "__main__":
     unittest.main()
