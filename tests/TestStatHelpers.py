@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from pyQuantTools.stats.stat_helpers import iqr, range_iqr_ratio, relative_entropy, simple_stats
+from pyQuantTools.stats.stat_helpers import iqr, range_iqr_ratio, relative_entropy, simple_stats, fast_exponential_smoothing
 
 class TestStatHelpers(unittest.TestCase):
     def setUp(self):
@@ -42,6 +42,14 @@ class TestStatHelpers(unittest.TestCase):
         result = relative_entropy(self.large_values)
         self.assertIsInstance(result, float)
         self.assertGreaterEqual(result, 0.0)
+
+    def test_fast_exponential_smoothing(self):
+        alpha = 0.5
+        smoothed_values = fast_exponential_smoothing(self.values, alpha=alpha)
+        self.assertIsInstance(smoothed_values, np.ndarray)
+        self.assertEqual(len(smoothed_values), len(self.values))
+        # Check that the first value of the smoothed array is the same as the original
+        self.assertEqual(smoothed_values[0], self.values[0])
 
 if __name__ == "__main__":
     unittest.main()
