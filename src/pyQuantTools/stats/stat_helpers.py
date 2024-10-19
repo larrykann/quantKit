@@ -5,6 +5,7 @@ Table of Contents:
     - atr(values: np.ndarray) -> array
     - fast_exponential_smoothing(values: np.ndarray) -> float
     - iqr(values: np.ndarray) -> float
+    - normal_cdf(z: float) -> float
     - range_iqr_ratio(values: np.ndarray, iqr: float) -> float
     - relative_entropy(p: np.ndarray, q: np.ndarray) -> float
     - simple_stats(values: np.ndarray) -> tuple[int, float, float, float]
@@ -94,6 +95,23 @@ def iqr(values: np.ndarray) -> float:
     """
     q1, q3 = np.percentile(values, [25, 75])
     return q3 -q1
+
+def normal_cdf(z: float) -> float:
+    """
+    Calculate the Normal Cumulative Distribution Function (CDF).
+
+    Parameters:
+    - z (float): The input value for which to calculate the CDF.
+
+    Returns:
+    - float: The calculated CDF value.
+    """
+    zz = abs(z)
+    pdf = np.exp(-0.5 * zz * zz) / np.sqrt(2.0 * np.pi)
+    t = 1.0 / (1.0 + zz * 0.2316419)
+    poly = ((((1.330274429 * t - 1.821255978) * t + 1.781477937) * t -
+             0.356563782) * t + 0.319381530) * t
+    return 1.0 - pdf * poly if z > 0.0 else pdf * poly
 
 def range_iqr_ratio(values: np.ndarray) -> float:
     """
