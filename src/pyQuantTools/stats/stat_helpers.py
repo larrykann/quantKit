@@ -5,7 +5,9 @@ Table of Contents:
     - atr(values: np.ndarray) -> array
     - fast_exponential_smoothing(values: np.ndarray) -> float
     - iqr(values: np.ndarray) -> float
+    - mutual_info(feature: np.ndarray, target: np.ndarray, nbins_feature: int = 10, nbins_target: int = 10) -> float
     - normal_cdf(z: float) -> float
+    - populate_contingency_matrix(feature: np.ndarray, target: np.ndarray, nbins_feature: int, nbins_target: int) -> tuple
     - range_iqr_ratio(values: np.ndarray, iqr: float) -> float
     - relative_entropy(p: np.ndarray, q: np.ndarray) -> float
     - simple_stats(values: np.ndarray) -> tuple[int, float, float, float]
@@ -96,6 +98,50 @@ def iqr(values: np.ndarray) -> float:
     q1, q3 = np.percentile(values, [25, 75])
     return q3 -q1
 
+# ---------------------------------------------
+# Mutual Information Function
+# ---------------------------------------------
+def mutual_info(
+    feature: np.ndarray, 
+    target: np.ndarray, 
+    nbins_feature: int = 10, 
+    nbins_target: int = 10
+) -> float:
+    """
+    Calculate Mutual Information between a feature and target, including discretization.
+   
+    Parameters:
+    - feature (np.ndarray): Data array for the feature variable.
+    - target (np.ndarray): Data array for the target variable.
+    - nbins_feature (int): Number of bins for the feature variables.
+    - nbins_target (int): Number of bins for the target variable.
+
+    Returns:
+    - float: Calculated mutual information value for the feature-target pair.
+    """
+    if not isinstance(feature, np.ndarray) or not isinstance(target, np.ndarray):
+        raise TypeError("'feature' and 'target' must both be numpy arrays.")
+
+    feature = feature.flatten()
+    target = target.flatten()
+    c_xy, c_feature, c_target = populate_contingency_matrix(
+        feature, target, nbins_feature, nbins_target
+    )
+
+    p_xy = c_xy / np.sum(c_xy)
+    p_feature = c_feature / np.sum(c_feature)
+    p_target = c_target / np.sum(c_target)
+
+    # Avoiding log(0) by adding a small epsilon where p_xy or the denominator is zero
+    p_xy_safe = np.where(p_xy > 0, p_xy, 1e-10)
+    denominator = p_feature[:, None] * p_target[None, :]
+    denominator_safe = np.where(denominator > 0, denominator, 1e-10)
+
+    # Vectorized calculation of mutual information
+    MI = np.sum(p_xy_safe * np.log(p_xy_safe / denominator_safe))
+
+    return MI
+
 def normal_cdf(z: float) -> float:
     """
     Calculate the Normal Cumulative Distribution Function (CDF).
@@ -112,6 +158,65 @@ def normal_cdf(z: float) -> float:
     poly = ((((1.330274429 * t - 1.821255978) * t + 1.781477937) * t -
              0.356563782) * t + 0.319381530) * t
     return 1.0 - pdf * poly if z > 0.0 else pdf * poly
+
+# ---------------------------------------------
+# Populate Contingency Matrix Function
+# ---------------------------------------------
+def populate_contingency_matrix(
+    feature: np.ndarray, 
+    target: np.ndarray, 
+    nbins_feature: int, 
+    nbins_target: int
+) -> tuple:
+    """
+    Populate a contingency matrix and calculate marginal counts for the feature and target.
+
+    Parameters:
+    - feature (np.ndarray): 1D numpy array representing the feature variable.
+    - target (np.ndarray): 1D numpy array representing the target variable.
+    - nbins_feature (int): Number of bins for the feature.
+    - nbins_target (int): Number of bins for the target.
+
+    Returns:
+    - tuple: (c_xy, c_feature, c_target) where:
+        - c_xy: Contingency matrix.
+        - c_feature: Marginal counts for the feature.
+        - c_target: Marginal counts for the target.
+    """
+    if not isinstance(feature, np.ndarray) or not isinstance(target, np.ndarray):
+        raise TypeError("'feature' and 'target' must both be numpy arrays.")
+
+    bins_feature = np.linspace(np.min(feature), np.max(feature), nbins_feature + 1)
+    bins_target = np.linspace(np.min(target), np.max(target), nbins_target + 1)
+
+    c_xy = np.zeros((nbins_feature, nbins_target), dtype=np.float64)
+    c_feature = np.zeros(nbins_feature, dtype=np.float64)
+    c_target = np.zeros(nbins_target, dtype=np.float64)
+
+    for i in range(len(feature)):
+        value = feature[i]
+        target_value = target[i]
+
+        idx_feature = np.searchsorted(bins_feature, value, side='right') - 1
+        idx_target = np.searchsorted(bins_target, target_value, side='right') - 1
+
+        # Ensure idx_feature is within valid range
+        if idx_feature < 0:
+            idx_feature = 0
+        elif idx_feature >= nbins_feature:
+            idx_feature = nbins_feature - 1
+
+        # Ensure idx_target is within valid range
+        if idx_target < 0:
+            idx_target = 0
+        elif idx_target >= nbins_target:
+            idx_target = nbins_target - 1
+
+        c_feature[idx_feature] += 1
+        c_target[idx_target] += 1   
+        c_xy[idx_feature, idx_target] += 1
+
+    return c_xy, c_feature, c_target
 
 def range_iqr_ratio(values: np.ndarray) -> float:
     """
