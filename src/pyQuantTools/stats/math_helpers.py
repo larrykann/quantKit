@@ -1,5 +1,5 @@
 """
-Statistical Helper Functions
+Mathmatical Helper Functions
 
 Table of Contents:
     - LogReturns(values: np.ndarray) -> array
