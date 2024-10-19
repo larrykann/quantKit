@@ -3,6 +3,7 @@ Statistical Helper Functions
 
 Table of Contents:
     - atr(values: np.ndarray) -> array
+    - compute_serial_correlated_break(values: np.ndarray, ncases: int, min_recent: int, max_recent: int, lag: int) -> tuple
     - fast_exponential_smoothing(values: np.ndarray) -> float
     - iqr(values: np.ndarray) -> float
     - mutual_info(feature: np.ndarray, target: np.ndarray, nbins_feature: int = 10, nbins_target: int = 10) -> float
@@ -11,6 +12,7 @@ Table of Contents:
     - range_iqr_ratio(values: np.ndarray, iqr: float) -> float
     - relative_entropy(p: np.ndarray, q: np.ndarray) -> float
     - simple_stats(values: np.ndarray) -> tuple[int, float, float, float]
+    - u_test(n1: int, x1: np.ndarray, n2: int, x2: np.ndarray) -> tuple
 
 """
 import numpy as np
@@ -62,6 +64,56 @@ def atr(
         atr_values[i] = np.mean(true_ranges[i - period + 1:i + 1])
 
     return atr_values
+
+# ---------------------------------------------
+# Serial-Correlated Mean Break Test Function
+# ---------------------------------------------
+def compute_serial_correlated_break(
+    values: np.ndarray, 
+    ncases: int, 
+    min_recent: int, 
+    max_recent: int, 
+    lag: int
+) -> tuple:
+    """
+    Serial-Correlated Mean Break Test
+
+    This test uses the `u_test` function to check a serial-correlated data series
+    for a break in its mean. It is based on the methods found in Timothy Masters'
+    "Statistically Sound Indicators for Financial Market Prediction".
+
+    Parameters:
+    - values (np.ndarray): The array containing the data series to be tested.
+    - ncases (int): The total number of observations in the dataset.
+    - min_recent (int): The minimum recent history cases to consider in the test (bars, observations).
+    - max_recent (int): The maximum recent history cases to consider in the test (bars, observations).
+    - lag (int): The maximum extent of serial correlation considered; this is typically the look-back period of the indicator.
+
+    Returns:
+    - tuple: (max_crit, ibreak)
+        - max_crit (float): The maximum U statistic observed across all tested boundaries,
+                           indicating the strongest evidence of a mean break found in the data series.
+        - ibreak (int): The boundary (in terms of number of observations from the start of the series) at which the maximum U statistic was observed,
+                      suggesting the most likely position for a mean break.
+    """
+    max_crit = -np.inf
+    ibreak = -1
+    for offset in range(lag + 1):
+        for nrecent in range(min_recent, max_recent + 1, lag):
+            if nrecent < offset + 1:
+                continue
+            n1 = (nrecent - offset - 1) // lag + 1
+            n2 = ncases - n1
+            if n2 < 1:
+                continue
+            x1 = values[:n1]
+            x2 = values[n1:n1+n2]
+            u_stat, crit = u_test(n1, x1, n2, x2)
+            if abs(crit) > max_crit:
+                max_crit = abs(crit)
+                ibreak = nrecent
+
+    return max_crit, ibreak
 
 def fast_exponential_smoothing(
         values: np.ndarray, 
@@ -294,3 +346,65 @@ def simple_stats(values: np.ndarray) -> tuple[int, float, float, float]:
     max_value = np.max(values)
 
     return ncases, mean, min_value, max_value
+
+# ---------------------------------------------
+# Mann-Whitney U Test Function
+# ---------------------------------------------
+def u_test(n1: int, x1: np.ndarray, n2: int, x2: np.ndarray) -> tuple:
+    """
+    Mann-Whitney U-test.
+
+    This test returns the U statistic based on set 1 relative to set 2, allowing for a one-tailed test.
+    A small U indicates that the mean of set 1 is greater than that of set 2.
+    Note that U' = n1 * n2 - U. Most statistical tables perform a two-tailed test by
+    considering the smaller of U and U'.
+
+    This function also computes the normal approximation z-score for the one-tailed test,
+    which is accurate when n1 + n2 > 20. It flips the sign of z so that z > 0 when mean1 > mean2.
+
+    Parameters:
+    - n1 (int): Number of elements in sample 1
+    - x1 (np.ndarray): Sample 1 data
+    - n2 (int): Number of elements in sample 2
+    - x2 (np.ndarray): Sample 2 data
+
+    Returns:
+    - tuple: (U, z)
+        - U (float): The U statistic
+        - z (float): The z-score for the normal approximation
+    """
+    # Combine the data into a single array while tracking original group memberships
+    combined = np.concatenate((x1, x2))
+    group = np.zeros(n1 + n2, dtype=np.int32)
+    group[:n1] = 1  # Group 1 for x1, 0 for x2 by default
+
+    indices = np.argsort(combined)
+    sorted_combined = combined[indices]
+    sorted_group = group[indices]
+
+    # Compute ranks and tie correction.
+    ranks = np.empty(n1 + n2, dtype=np.float64)
+    tie_correction = 0.0
+    i = 0
+    while i < n1 + n2:
+        start = i
+        while i < n1 + n2 - 1 and sorted_combined[i] == sorted_combined[i + 1]:
+            i += 1
+        i += 1
+        ntied = i - start
+        tie_correction += ntied ** 3 - ntied
+        for j in range(start, i):
+            ranks[j] = start + (i - start - 1) / 2.0 + 1
+
+    # Compute the U statistic.
+    R = np.sum(ranks[sorted_group == 1])
+    U = n1 * n2 + 0.5 * (n1 * (n1 + 1.0)) - R
+
+    # Compute the normal approximation.
+    dn = float(n1 + n2)
+    term1 = n1 * n2 / (dn * (dn - 1.0))
+    term2 = (dn**3 - dn - tie_correction) / 12.0
+    z = (0.5 * n1 * n2 - U) / np.sqrt(term1 * term2)
+
+    return U, z
+
