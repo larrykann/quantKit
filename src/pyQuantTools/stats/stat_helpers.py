@@ -2,7 +2,7 @@
 Statistical Helper Functions
 
 Table of Contents:
-    - atr(values: np.ndarray) ->
+    - atr(values: np.ndarray) -> array
     - fast_exponential_smoothing(values: np.ndarray) -> float
     - iqr(values: np.ndarray) -> float
     - range_iqr_ratio(values: np.ndarray, iqr: float) -> float
