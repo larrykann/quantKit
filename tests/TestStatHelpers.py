@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from pyQuantTools.stats.stat_helpers import iqr, range_iqr_ratio, relative_entropy, simple_stats, fast_exponential_smoothing, atr
+from pyQuantTools.stats.stat_helpers import iqr, range_iqr_ratio, relative_entropy, simple_stats, fast_exponential_smoothing, atr, normal_cdf
 
 class TestStatHelpers(unittest.TestCase):
     def setUp(self):
@@ -64,6 +64,14 @@ class TestStatHelpers(unittest.TestCase):
         self.assertEqual(len(atr_values), len(self.high_prices))  # The ATR length should be the same as the input length
         self.assertTrue(np.isnan(atr_values[:period]).all())  # The first `period` values should be NaN
         self.assertFalse(np.isnan(atr_values[period:]).any())  # The rest of the values should not be NaN
+
+    def test_normal_cdf(self):
+        z_values = np.array([-2.0, -1.0, 0.0, 1.0, 2.0])
+        expected_results = np.array([0.0228, 0.1587, 0.5, 0.8413, 0.9772])
+        for z, expected in zip(z_values, expected_results):
+            result = normal_cdf(z)
+            self.assertIsInstance(result, float)
+            self.assertAlmostEqual(result, expected, places=2)
 
 if __name__ == "__main__":
     unittest.main()
