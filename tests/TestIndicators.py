@@ -2,6 +2,7 @@ import unittest
 import numpy as np
 from pyQuantTools.indicators.Indicator import Indicator
 from pyQuantTools.indicators.Stochastic import Stochastic
+from pyQuantTools.indicators.CloseMinusMovingAverage import CMMA
 
 class TestIndicators(unittest.TestCase):
     def setUp(self):
@@ -38,6 +39,14 @@ class TestIndicators(unittest.TestCase):
         stochastic_2 = Stochastic(data=self.data, period=period, smooth=2)
         stoch_values_2 = stochastic_2.calculate()
         self.assertEqual(len(stoch_values_2), len(self.data['close']))
+
+    def test_cmma_indicator(self):
+        # Test CMMA indicator
+        cmma_indicator = CMMA(data=self.data, lookback=14, atr_lookback=10)
+        cmma_values = cmma_indicator.calculate()
+        self.assertEqual(len(cmma_values), len(self.data['close']))
+        self.assertTrue(np.isnan(cmma_values[:max(14, 10)]).all())  # Initial values should be NaN
+        self.assertFalse(np.isnan(cmma_values[max(14, 10):]).any())  # Remaining values should not be NaN
 
 if __name__ == "__main__":
     unittest.main()
