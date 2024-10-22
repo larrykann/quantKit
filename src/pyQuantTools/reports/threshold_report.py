@@ -1,11 +1,11 @@
-import pandas as pd
+import numpy as np
 from pyQuantTools.stats.threshold.threshold_table import generate_threshold_table
 from pyQuantTools.stats.threshold.threshold_opt import opt_thresh
 from pyQuantTools.stats.mcpt.threshold_mcpt import opt_MCPT
 
 def generate_threshold_report(
-    features: pd.DataFrame,
-    target: pd.DataFrame,
+    features: np.recarray,
+    target: np.recarray,
     bins: int = 13,
     min_cases_percent: int = 5,
     n_permutations: int = 100
@@ -16,10 +16,10 @@ def generate_threshold_report(
 
     Parameters
     ----------
-    features : pd.DataFrame
-        DataFrame containing indicator (signal) values. Columns represent different indicators.
-    target : pd.DataFrame
-        DataFrame containing target return values. Columns represent different return metrics.
+    features : np.recarray
+        Record array containing indicator (signal) values. Columns represent different indicators.
+    target : np.recarray
+        Record array containing target return values. Columns represent different return metrics.
     bins : int, optional
         Number of bins for threshold calculations. Must be either 13 or 27. Default is 13.
     min_cases_percent : int, optional
@@ -34,75 +34,35 @@ def generate_threshold_report(
     -------
     None
         The function prints the threshold report directly to the console.
-
-    Raises
-    ------
-    ValueError
-        If `features` or `target` is not a pandas DataFrame.
-        If `bins` is not either 13 or 27.
-        If `min_cases_percent` is not between 0 and 100.
-        If `n_permutations` is negative.
-
-    Example
-    -------
-    ```python
-    import pandas as pd
-    import numpy as np
-    from your_library_name.reports.threshold_report import generate_threshold_report
-
-    # Example data
-    np.random.seed(42)  # For reproducibility
-    features = pd.DataFrame({
-        'Indicator1': np.random.rand(100),
-        'Indicator2': np.random.rand(100),
-        'Date': pd.date_range(start='2020-01-01', periods=100)
-    })
-
-    target = pd.DataFrame({
-        'Return': np.random.randn(100),
-        'Date': pd.date_range(start='2020-01-01', periods=100)
-    })
-
-    # Generate the threshold report
-    generate_threshold_report(
-        features=features,
-        target=target,
-        bins=13,
-        min_cases_percent=5,
-        n_permutations=100
-    )
-    ```
     """
-    
     # Validate input types
-    if not isinstance(features, pd.DataFrame):
-        raise ValueError("Features must be a pandas DataFrame.")
-    if not isinstance(target, pd.DataFrame):
-        raise ValueError("Target must be a pandas DataFrame.")
-    
+    if not isinstance(features, np.recarray):
+        raise ValueError("Features must be a numpy recarray.")
+    if not isinstance(target, np.recarray):
+        raise ValueError("Target must be a numpy recarray.")
+
     # Validate 'bins' parameter
     if bins not in [13, 27]:
         raise ValueError("Bins must be either 13 or 27.")
-    
+
     # Validate 'min_cases_percent' parameter
     if not (0 <= min_cases_percent <= 100):
         raise ValueError("min_cases_percent must be between 0 and 100.")
-    
+
     # Validate 'n_permutations' parameter
     if n_permutations < 0:
         raise ValueError("n_permutations must be non-negative.")
-    
-    # Remove 'Date' column if present
-    feature_fields = features.drop(columns=['Date'], errors='ignore')
-    target_fields = target.drop(columns=['Date'], errors='ignore')
+
+    feature_fields = [field for field in features.dtype.names if field != 'Date']
+    target_fields = [field for field in target.dtype.names if field != 'Date']
 
     header_printed = False
 
-    for feature_field in feature_fields.columns:
-        feature = feature_fields[feature_field].values
+    for feature_field in feature_fields:
+        feature = features[feature_field]
 
-        for target_field in target_fields.columns:
-            target_array = target_fields[target_field].values
+        for target_field in target_fields:
+            target_array = target[target_field]
 
             # Generate ROC table using the updated function
             roc_table = generate_threshold_table(signal_vals=feature, returns=target_array, bin_count=bins)

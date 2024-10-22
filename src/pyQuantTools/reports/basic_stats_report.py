@@ -1,27 +1,31 @@
-import pandas as pd
+import numpy as np
 from pyQuantTools.stats.stat_helpers import simple_stats, iqr, range_iqr_ratio, relative_entropy
 
-def generate_basic_stats_report(data: pd.DataFrame) -> None:
+# Updated basic statistics report function
+def generate_basic_stats_report(data) -> None:
     """
-    Generate a basic statistical report for each column in the provided DataFrame.
+    Generate a basic statistical report for each column in the provided recarray.
 
     Parameters
     ----------
-    data : pd.DataFrame
-        DataFrame containing numerical data for which to generate the report.
+    data : np.recarray
+        Record array containing numerical data for which to generate the report.
 
     Returns
     -------
     None
         The function prints the basic statistics report directly to the console.
     """
-    if not isinstance(data, pd.DataFrame):
-        raise ValueError("Input data must be a pandas DataFrame.")
+    if not isinstance(data, np.recarray):
+        raise ValueError("Input data must be a numpy recarray.")
 
     results = []
 
-    for column in data.columns:
-        values = data[column].dropna().values  # Drop NaN values and convert to NumPy array
+    for column in data.dtype.names:
+        if column == 'Date':
+            continue
+        values = data[column]
+        values = values[~np.isnan(values)]  # Remove NaN values
         
         # Calculate basic statistics
         ncases, mean, min_value, max_value = simple_stats(values)
@@ -56,3 +60,4 @@ def generate_basic_stats_report(data: pd.DataFrame) -> None:
     
     for result in results:
         print(f"| {result['Indicator']:<19} | {result['ncases']:<6} | {result['mean']:<14.4f} | {result['min']:<14.4f} | {result['max']:<14.4f} | {result['iqr']:<14.4f} | {result['rnq/IQR']:<14.4f} | {result['relative_entropy']:<19.4f} |")
+

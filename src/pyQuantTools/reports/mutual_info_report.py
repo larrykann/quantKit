@@ -1,6 +1,6 @@
 import multiprocessing as mp
 import numpy as np
-from pyQuantTools.stats.stat_helpers import mutual_info, populate_contingency_matrix
+from pyQuantTools.stats.stat_helpers import mutual_info
 from pyQuantTools.stats.mcpt.BatchCyclicPermutation import bcp
 
 def generate_mi_report(
