@@ -2,13 +2,12 @@ import os
 from contextlib import redirect_stdout
 from datetime import datetime
 from pyQuantTools.visualizations.SavePlotToFile import save_plot_to_file
-from pyQuantTools.visualizations.PlotToTerminal import plot_to_terminal
 from pyQuantTools.reports.mutual_info_report import generate_mi_report
 from pyQuantTools.reports.threshold_report import generate_threshold_report
 from pyQuantTools.reports.basic_stats_report import generate_basic_stats_report
 from pyQuantTools.reports.mcmbt_report import generate_mcmbt_report
 
-def run_indicator_tests(features, target, report_name, file_path=None, file_extension='md', save_plots_to_file=True, **kwargs):
+def run_indicator_tests(features, target, report_name, file_path=None, file_extension='md', **kwargs):
     """
     Runs a suite of indicator tests on the given features dataframe and target, and generates a report.
 
@@ -92,24 +91,19 @@ def run_indicator_tests(features, target, report_name, file_path=None, file_exte
             print(f"# Indicator Soundness Report {report_name}")
             print("The generated report provides a comprehensive analysis of trading indicators, offering insights into their statistical properties, predictive power, mean stability over time, and optimal thresholds for profitability. It combines detailed statistical summaries, mutual information scores, mean break tests, and profit factor evaluations.")
             print()
-            # Add in visualizations
-            if save_plots_to_file:
-                save_plot_to_file(features, images_directory)
-                save_plot_to_file(target, images_directory)
-            else:
-                plot_to_terminal(features)
-                plot_to_terminal(target)
+            save_plot_to_file(features, images_directory)
+            save_plot_to_file(target, images_directory)
             print()
-            # Generate markdown links for the saved plots if saving to files
-            if save_plots_to_file:
-                for column in features.dtype.names:
-                    image_path = os.path.join(images_directory, f"{column}.png")
-                    print(f"![{column}]({image_path})")
-                    print()
-                for column in target.dtype.names:
-                    image_path = os.path.join(images_directory, f"{column}.png")
-                    print(f"![{column}]({image_path})")
-                    print()
+           
+            for column in features.dtype.names:
+                image_path = os.path.join(images_directory, f"{column}.png")
+                print(f"![{column}]({image_path})")
+                print()
+            for column in target.dtype.names:
+                image_path = os.path.join(images_directory, f"{column}.png")
+                print(f"![{column}]({image_path})")
+                print()
+
             generate_basic_stats_report(features, **statistics_params)
             generate_mi_report(features, target, **mi_params)
             print()
