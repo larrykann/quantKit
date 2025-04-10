@@ -1,7 +1,7 @@
 import multiprocessing as mp
 import numpy as np
-from pyQuantTools.stats.stat_helpers import mutual_info
-from pyQuantTools.stats.mcpt.BatchCyclicPermutation import bcp
+from quantKit.stats.stat_helpers import mutual_info
+from quantKit.stats.mcpt.BatchCyclicPermutation import bcp
 
 def generate_mi_report(
     features: np.recarray, 

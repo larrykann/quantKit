@@ -1,7 +1,7 @@
 import numpy as np
-from pyQuantTools.stats.stat_helpers import atr, normal_cdf
-from pyQuantTools.math.math_helpers import LogReturns
-from pyQuantTools.indicators.Indicator import Indicator
+from quantKit.stats.stat_helpers import atr, normal_cdf
+from quantKit.math.math_helpers import LogReturns
+from quantKit.indicators.Indicator import Indicator
 
 class CMMA(Indicator):
     def __init__(self, data: dict, lookback: int, atr_lookback: int = 252):

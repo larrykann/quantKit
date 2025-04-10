@@ -1,7 +1,7 @@
 import numpy as np
-from pyQuantTools.stats.threshold.threshold_table import generate_threshold_table
-from pyQuantTools.stats.threshold.threshold_opt import opt_thresh
-from pyQuantTools.stats.mcpt.threshold_mcpt import opt_MCPT
+from quantKit.stats.threshold.threshold_table import generate_threshold_table
+from quantKit.stats.threshold.threshold_opt import opt_thresh
+from quantKit.stats.mcpt.threshold_mcpt import opt_MCPT
 
 def generate_threshold_report(
     features: np.recarray,

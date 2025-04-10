@@ -1,6 +1,6 @@
 import multiprocessing as mp
 import numpy as np
-from pyQuantTools.stats.stat_helpers import compute_serial_correlated_break as mb
+from quantKit.stats.stat_helpers import compute_serial_correlated_break as mb
 
 def generate_mcmbt_report(
     data: np.recarray, 

@@ -1,5 +1,5 @@
-from pyQuantTools.indicators.Indicator import Indicator
-from pyQuantTools.stats.stat_helpers import fast_exponential_smoothing
+from quantKit.indicators.Indicator import Indicator
+from quantKit.stats.stat_helpers import fast_exponential_smoothing
 import numpy as np
 
 class Stochastic(Indicator):

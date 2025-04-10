@@ -1,5 +1,5 @@
 import numpy as np
-from pyQuantTools.stats.stat_helpers import simple_stats, iqr, range_iqr_ratio, relative_entropy
+from quantKit.stats.stat_helpers import simple_stats, iqr, range_iqr_ratio, relative_entropy
 
 # Updated basic statistics report function
 def generate_basic_stats_report(data) -> None:

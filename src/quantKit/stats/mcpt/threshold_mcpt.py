@@ -1,6 +1,6 @@
 from typing import Tuple
 import numpy as np
-from pyQuantTools.stats.threshold.threshold_opt import opt_thresh
+from quantKit.stats.threshold.threshold_opt import opt_thresh
 
 def opt_MCPT(
     signal_vals: np.ndarray,

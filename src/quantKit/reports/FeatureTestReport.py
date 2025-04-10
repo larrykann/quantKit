@@ -1,11 +1,11 @@
 import os
 from contextlib import redirect_stdout
 from datetime import datetime
-from pyQuantTools.visualizations.SavePlotToFile import save_plot_to_file
-from pyQuantTools.reports.mutual_info_report import generate_mi_report
-from pyQuantTools.reports.threshold_report import generate_threshold_report
-from pyQuantTools.reports.basic_stats_report import generate_basic_stats_report
-from pyQuantTools.reports.mcmbt_report import generate_mcmbt_report
+from quantKit.visualizations.SavePlotToFile import save_plot_to_file
+from quantKit.reports.mutual_info_report import generate_mi_report
+from quantKit.reports.threshold_report import generate_threshold_report
+from quantKit.reports.basic_stats_report import generate_basic_stats_report
+from quantKit.reports.mcmbt_report import generate_mcmbt_report
 
 def run_indicator_tests(features, target, report_name, file_path=None, file_extension='md', **kwargs):
     """
