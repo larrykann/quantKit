@@ -5,13 +5,10 @@ Table of Contents:
     - atr(values: np.ndarray) -> array
     - compute_serial_correlated_break(values: np.ndarray, ncases: int, min_recent: int, max_recent: int, lag: int) -> tuple
     - fast_exponential_smoothing(values: np.ndarray) -> float
-    - iqr(values: np.ndarray) -> float
     - mutual_info(feature: np.ndarray, target: np.ndarray, nbins_feature: int = 10, nbins_target: int = 10) -> float
     - normal_cdf(z: float) -> float
     - populate_contingency_matrix(feature: np.ndarray, target: np.ndarray, nbins_feature: int, nbins_target: int) -> tuple
-    - range_iqr_ratio(values: np.ndarray, iqr: float) -> float
     - relative_entropy(p: np.ndarray, q: np.ndarray) -> float
-    - simple_stats(values: np.ndarray) -> tuple[int, float, float, float]
     - u_test(n1: int, x1: np.ndarray, n2: int, x2: np.ndarray) -> tuple
 
 """
@@ -137,19 +134,6 @@ def fast_exponential_smoothing(
 
     return smoothed_values
 
-def iqr(values: np.ndarray) -> float:
-    """
-    Calculate the Interquartile Range (IQR) for a given set of values.
-    
-    Parameters:
-    - values (NumPy array): An array of values.
-
-    Returns:
-    - float: The calculated IQR.
-    """
-    q1, q3 = np.percentile(values, [25, 75])
-    return q3 -q1
-
 # ---------------------------------------------
 # Mutual Information Function
 # ---------------------------------------------
@@ -270,19 +254,6 @@ def populate_contingency_matrix(
 
     return c_xy, c_feature, c_target
 
-def range_iqr_ratio(values: np.ndarray) -> float:
-    """
-    Calculate the range over IQR (Interquartile Range) ratio for a given set of values.
-    
-    Parameters:
-    - values (NumPy array): An array of values.
-
-    Returns:
-    - float: The range over IQR ratio.
-    """
-    calculated_iqr = iqr(values)
-    return (values.max() - values.min()) / (calculated_iqr + 1.e-60)
-
 def relative_entropy(values: np.ndarray) -> float:
     """
     Calculate the entropy for a given set of values by binning them into specified bins.
@@ -294,6 +265,8 @@ def relative_entropy(values: np.ndarray) -> float:
     - float: The calculated relative entropy.
     """
     n = len(values)
+    if n == 0:
+        return 0.0
 
     # Determine number of bins based on the number of values
     if n >= 10000:
@@ -305,47 +278,37 @@ def relative_entropy(values: np.ndarray) -> float:
     else:
         nbins = 3
 
-    # Initialize counts
-    counts = np.zeros(nbins, dtype=int)
-
     # Calculate min and max for normalization
     xmin = values.min()
     xmax = values.max()
 
     # Calculate factor to map values to bins
     factor = (nbins - 0.00000000001) / (xmax - xmin + 1.e-60)
-
-    # Count occurrences in each bin
-    for value in values:
-        k = int(factor * (value - xmin))
-        counts[k] += 1
-
-    # Calculate entropy
-    ent_sum = 0.0
-    for count in counts:
-        if count > 0:
-            p = count / n
-            ent_sum -= p * np.log(p)
-
+    
+    # Vectorized binning
+    bin_indices = np.floor(factor * (values - xmin)).astype(int)
+    
+    # Ensure indices are within valid range (important for edge cases)
+    bin_indices = np.clip(bin_indices, 0, nbins - 1)
+    
+    # Count values in each bin using numpy's bincount
+    if len(bin_indices) > 0:  # Protect against empty arrays
+        counts = np.bincount(bin_indices, minlength=nbins)
+        if len(counts) < nbins:
+            # If bincount returns fewer than nbins values, pad with zeros
+            full_counts = np.zeros(nbins, dtype=int)
+            full_counts[:len(counts)] = counts
+            counts = full_counts
+    else:
+        counts = np.zeros(nbins, dtype=int)
+    
+    # Vectorized entropy calculation
+    # Only consider non-zero probabilities
+    p = counts[counts > 0] / n
+    ent_sum = -np.sum(p * np.log(p))
+        
     # Normalize by the maximum possible entropy
     return ent_sum / np.log(nbins)
-
-def simple_stats(values: np.ndarray) -> tuple[int, float, float, float]:
-    """
-    Calculate simple statistics including number of cases, mean, minimum, and maximum for a given set of values.
-    
-    Parameters:
-    - values (NumPy array): An array of values for which to calculate statistics.
-
-    Returns:
-    - tuple: A tuple containing ncases, mean, min_value, max_value.
-    """
-    ncases = values.size
-    mean = np.mean(values)
-    min_value = np.min(values)
-    max_value = np.max(values)
-
-    return ncases, mean, min_value, max_value
 
 # ---------------------------------------------
 # Mann-Whitney U Test Function
