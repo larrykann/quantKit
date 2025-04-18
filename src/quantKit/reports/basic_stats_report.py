@@ -55,7 +55,7 @@ def generate_basic_stats_report(
         # Range/IQR calculation
         rnq_iqr = float((max_value - min_value) / (interquartile_range + 1e-60))
 
-        # Relative entropy (imported optimized logic)
+        # Relative entropy
         entropy_value = float(relative_entropy(values))
 
         results.append({
