@@ -13,6 +13,7 @@ setup(
     install_requires=[
         'numpy',
         'pandas',
+        'rich',
         # Add other dependencies as needed
     ],
     classifiers=[
