@@ -1,0 +1,9 @@
+[tool.pydocstyle]
+# Use Google conventions
+convention = "google"
+
+# Only check your quantKit source tree
+match-dir = "quantKit"
+
+# (optional) ignore these if you don’t care about them:
+# ignore = ["D104", "D105", "D107"]

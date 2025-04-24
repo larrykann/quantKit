@@ -1,4 +1,7 @@
-# setup.py
+"""Setup script for quantKit.
+
+Defines package metadata and dependencies for installation via setuptools.
+"""
 from setuptools import setup, find_packages
 
 setup(
