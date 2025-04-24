@@ -3,6 +3,7 @@ Pure-math utility and helper functions for the stochastics package in quantKit.
 
 TOC
 - normal_cdf
+- quadratic_variation
 """
 import numpy as np
 
@@ -23,4 +24,15 @@ def normal_cdf(z: float) -> float:
              0.356563782) * t + 0.319381530) * t
     return 1.0 - pdf * poly if z > 0.0 else pdf * poly
 
+def quadratic_variation(path: np.ndarray) -> float:
+    """
+    Compute the quadratic variation of a single path.
 
+    Parameters:
+    - path: 1D array of shape (n_steps+1,)
+
+    Returns:
+    - float: sum of squared increments
+    """
+    diffs = np.diff(path)
+    return np.sum(diffs**2)
