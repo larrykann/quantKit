@@ -13,3 +13,8 @@ class StrategySettings:
             self.intraday_start_date = self.start_date
 
 
+DEFAULT_STRATEGY_SETTINGS = StrategySettings(
+    start_date=None,
+    end_date=None,
+    intraday_start_date=None
+)
