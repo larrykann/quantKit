@@ -14,6 +14,7 @@ setup(
         'numpy',
         'pandas',
         'rich',
+        'numba',
         # Add other dependencies as needed
     ],
     classifiers=[
