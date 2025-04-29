@@ -1,0 +1,19 @@
+site_name: quantKit
+repo_url: https://github.com/larrykann/quantKit
+
+nav:
+  - Home: index.md
+  - API Reference:
+      - DataContainer: reference/quantKit.data.container.md
+      - Stochastics Utils: reference/quantKit.stochastic.utils.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths:
+            - src
+
+theme:
+  name: material

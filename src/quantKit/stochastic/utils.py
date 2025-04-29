@@ -15,10 +15,10 @@ def normal_cdf(z: float) -> float:
     Calculate the Normal Cumulative Distribution Function (CDF).
 
     Parameters:
-    - z (float): The input value for which to calculate the CDF.
+        z (float): The input value for which to calculate the CDF.
 
     Returns:
-    - float: The calculated CDF value.
+        float: The calculated CDF value.
 
     Examples:
         >>> from quantKit.stochastics.utils import normal_cdf
@@ -39,10 +39,10 @@ def quadratic_variation(path: np.ndarray) -> float:
     Compute the quadratic variation of a single path.
 
     Parameters:
-    - path: 1D array of shape (n_steps+1,)
+        path: 1D array of shape (n_steps+1,)
 
     Returns:
-    - float: sum of squared increments
+        float: sum of squared increments
     
     Examples:
         >>> from quantKit.stochastics.utils import quadratic_variation

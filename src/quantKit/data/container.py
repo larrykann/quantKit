@@ -5,7 +5,7 @@ Provides DataContainer for timestamp-agnostic time series storage backed by nump
 
 __all__ = ["DataContainer"]
 
-from typing import Dict, List
+from typing import Dict, List, Any
 import numpy as np
 
 class DataContainer:
@@ -46,7 +46,7 @@ class DataContainer:
             return self._arrays[name]
         raise AttributeError(f"No such attribute: {name}")
 
-    def __setattr__(self, name: str, value):
+    def __setattr__(self, name: str, value: Any) -> None:
         """
         Set a new field or overwrite an existing one.
 
