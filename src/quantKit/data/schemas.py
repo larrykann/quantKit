@@ -6,6 +6,7 @@ Each schema maps field names to NumPy dtypes. Adapters must validate
 DataContainer contents against these schemas.
 """
 
+from dataclasses import dataclass, asdict
 import numpy as np
 
 __all__ = [
@@ -14,61 +15,67 @@ __all__ = [
     "DAILY_BAR_SCHEMA",
 ]
 
-"""
-Trade-level (tick/trade) data schema.
+@dataclass(frozen=True)
+class TradeSchemaDef:
+    """
+    Schema for trade-level (tick) data.
 
-Fields:
-    timestamps (datetime64[ns]): array of trade timestamps.
-    price (float64): array of trade prices.
-    volume (float64): array of trade volumes.
-"""
-TRADE_SCHEMA = {
-    "timestamps": np.dtype("datetime64[ns]"),
-    "price":      np.dtype("float64"),
-    "volume":     np.dtype("float64"),
-}
+    Attributes:
+        timestamps (np.dtype): dtype of the timestamps array (datetime64[ns]).
+        price (np.dtype): dtype of the price array (float64).
+        volume (np.dtype): dtype of the volume array (float64).
+    """
+    timestamps: np.dtype = np.dtype("datetime64[ns]")
+    price:      np.dtype = np.dtype("float64")
+    volume:     np.dtype = np.dtype("float64")
 
-"""
-Intraday bar data schema.
+# Runtime schema dict used by validate_schema()
+TRADE_SCHEMA = asdict(TradeSchemaDef())
 
-Fields:
-    timestamps (datetime64[ns]): array of bar boundary timestamps.
-    open (float64): array of bar open prices.
-    high (float64): array of bar high prices.
-    low (float64): array of bar low prices.
-    close (float64): array of bar close prices.
-    volume (float64): array of bar volumes (sum of trade volumes).
-"""
-INTRADAY_BAR_SCHEMA = {
-    "timestamps": np.dtype("datetime64[ns]"),
-    "open":       np.dtype("float64"),
-    "high":       np.dtype("float64"),
-    "low":        np.dtype("float64"),
-    "close":      np.dtype("float64"),
-    "volume":     np.dtype("float64"),
-}
+@dataclass(frozen=True)
+class IntradayBarSchemaDef:
+    """
+    Schema for intraday bar data.
 
-"""
-Daily bar data schema with adjustments.
+    Attributes:
+        timestamps (np.dtype): datetime64[ns] array of bar boundaries.
+        open (np.dtype): float64 open prices.
+        high (np.dtype): float64 high prices.
+        low (np.dtype): float64 low prices.
+        close (np.dtype): float64 close prices.
+        volume (np.dtype): float64 summed volumes.
+    """
+    timestamps: np.dtype = np.dtype("datetime64[ns]")
+    open:       np.dtype = np.dtype("float64")
+    high:       np.dtype = np.dtype("float64")
+    low:        np.dtype = np.dtype("float64")
+    close:      np.dtype = np.dtype("float64")
+    volume:     np.dtype = np.dtype("float64")
 
-Fields:
-    timestamps (datetime64[D]): array of calendar dates.
-    open (float64): array of unadjusted open prices.
-    high (float64): array of unadjusted high prices.
-    low (float64): array of unadjusted low prices.
-    close (float64): array of adjusted close prices.
-    adj_close (float64): explicit adjusted close, identical to close.
-    volume (float64): array of unadjusted volumes.
-    split_factor (float64): array of cumulative split factors.
-"""
-DAILY_BAR_SCHEMA = {
-    "timestamps":   np.dtype("datetime64[D]"),
-    "open":         np.dtype("float64"),
-    "high":         np.dtype("float64"),
-    "low":          np.dtype("float64"),
-    "close":        np.dtype("float64"),
-    "adj_close":    np.dtype("float64"),
-    "volume":       np.dtype("float64"),
-    "split_factor": np.dtype("float64"),
-}
+INTRADAY_BAR_SCHEMA = asdict(IntradayBarSchemaDef())
 
+@dataclass(frozen=True)
+class DailyBarSchemaDef:
+    """
+    Schema for daily bar data with adjustments.
+
+    Attributes:
+        timestamps (np.dtype): datetime64[D] array of calendar dates.
+        open (np.dtype): float64 unadjusted open prices.
+        high (np.dtype): float64 unadjusted high prices.
+        low (np.dtype): float64 unadjusted low prices.
+        close (np.dtype): float64 **adjusted** close prices.
+        adj_close (np.dtype): float64 explicit adjusted close.
+        volume (np.dtype): float64 unadjusted volumes.
+        split_factor (np.dtype): float64 cumulative split factors.
+    """
+    timestamps:   np.dtype = np.dtype("datetime64[D]")
+    open:         np.dtype = np.dtype("float64")
+    high:         np.dtype = np.dtype("float64")
+    low:          np.dtype = np.dtype("float64")
+    close:        np.dtype = np.dtype("float64")
+    adj_close:    np.dtype = np.dtype("float64")
+    volume:       np.dtype = np.dtype("float64")
+    split_factor: np.dtype = np.dtype("float64")
+
+DAILY_BAR_SCHEMA = asdict(DailyBarSchemaDef())
