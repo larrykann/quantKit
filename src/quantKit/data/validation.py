@@ -7,6 +7,8 @@ Primary entry point:
     validate_schema(dc: DataContainer, schema: dict) -> bool
 """
 
+__all__ = ["validate_schema"]
+
 import numpy as np
 from quantKit.data.container import DataContainer
 
