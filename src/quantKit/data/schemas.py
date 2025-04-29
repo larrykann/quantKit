@@ -20,12 +20,12 @@ Trade-level (tick/trade) data schema.
 Fields:
     timestamps (datetime64[ns]): array of trade timestamps.
     price (float64): array of trade prices.
-    size (float64): array of trade sizes (volumes).
+    volume (float64): array of trade volume (sizes of each trade).
 """
 TRADE_SCHEMA = {
     "timestamps": np.dtype("datetime64[ns]"),
     "price":      np.dtype("float64"),
-    "size":       np.dtype("float64"),
+    "volume":       np.dtype("float64"),
 }
 
 """
