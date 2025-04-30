@@ -88,3 +88,47 @@ class DataContainer:
         except KeyError as e:
             raise ValueError(f"Field {e.args[0]} not found in DataContainer")
         return np.column_stack(cols)
+    
+    def slice_by_mask(self, mask: np.ndarray) -> "DataContainer":
+        """Return a new container filtered by a boolean mask.
+
+        Args:
+            mask (np.ndarray): 1D boolean array of the same length as `timestamps`;
+                True to keep the row, False to drop it.
+
+        Returns:
+            DataContainer: New container containing only the masked rows.
+        """
+        filtered = DataContainer(self.timestamps[mask])
+        for field, arr in self._arrays.items():
+            filtered._arrays[field] = arr[mask]
+        return filtered
+
+    def split_last_n_days(self, n_days: int) -> tuple["DataContainer", "DataContainer"]:
+        """Split into training and validation by the last N distinct calendar days.
+
+        Treats each timestamp as a trading day via `datetime64[D]`, so weekends or
+        holiday gaps are handled automatically.
+
+        Args:
+            n_days (int): Number of most recent distinct days to reserve for validation.
+
+        Returns:
+            Tuple[DataContainer, DataContainer]:
+                - training_set: Container with all rows _before_ the validation window.
+                - validation_set: Container with all rows on or _after_ the cutoff day.
+
+        Raises:
+            ValueError: If there are fewer than `n_days` distinct days in `timestamps`.
+        """
+        # Cast to dates to count unique days
+        days = self.timestamps.astype("datetime64[D]")
+        unique_days = np.unique(days)
+        if unique_days.size < n_days:
+            raise ValueError(
+                f"Only {unique_days.size} distinct days available, "
+                f"cannot split last {n_days} days."
+            )
+        cutoff = unique_days[-n_days]
+        mask_val = days >= cutoff
+        return self.slice_by_mask(~mask_val), self.slice_by_mask(mask_val)
