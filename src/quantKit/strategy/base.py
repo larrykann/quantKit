@@ -16,7 +16,7 @@ class Strategy(ABC):
         self.settings = StrategySettings(**merged)
 
         # now validate required fields
-        missing = [f for f in ('start_date','end_date') 
+        missing = [f for f in ("start_date","end_date","validation_days") 
                    if getattr(self.settings, f) is None]
         if missing:
             raise ValueError(
