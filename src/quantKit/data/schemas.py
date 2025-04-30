@@ -60,7 +60,7 @@ class DailyBarSchemaDef:
     Schema for daily bar data with adjustments.
 
     Attributes:
-        timestamps (np.dtype): datetime64[D] array of calendar dates.
+        timestamps (np.dtype): datetime64[ns] array of calendar dates.
         open (np.dtype): float64 unadjusted open prices.
         high (np.dtype): float64 unadjusted high prices.
         low (np.dtype): float64 unadjusted low prices.
