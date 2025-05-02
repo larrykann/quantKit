@@ -47,14 +47,14 @@ class TestSchemasValidation(unittest.TestCase):
             '2025-04-01',
             '2025-04-02',
             '2025-04-03'
-        ], dtype='datetime64[D]')
+        ], dtype='datetime64[ns]')
         dc = DataContainer(ts)
         for field in ('open', 'high', 'low', 'close', 'adj_close', 'volume', 'split_factor'):
             setattr(dc, field, np.full(len(ts), 1.0, dtype=np.float64))
         self.assertTrue(validate_schema(dc, DAILY_BAR_SCHEMA))
 
     def test_daily_schema_missing_fields_raises(self):
-        ts = np.array(['2025-04-01', '2025-04-02'], dtype='datetime64[D]')
+        ts = np.array(['2025-04-01', '2025-04-02'], dtype='datetime64[ns]')
         dc = DataContainer(ts)
         dc.open = np.ones(len(ts), dtype=np.float64)
         dc.high = np.ones(len(ts), dtype=np.float64)

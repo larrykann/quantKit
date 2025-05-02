@@ -77,7 +77,7 @@ class DailyBarSchemaDef:
         volume (np.dtype): float64 unadjusted volumes.
         split_factor (np.dtype): float64 cumulative split factors.
     """
-    timestamps:   np.dtype = np.dtype("datetime64[D]")
+    timestamps:   np.dtype = np.dtype("datetime64[ns]")
     open:         np.dtype = np.dtype("float64")
     high:         np.dtype = np.dtype("float64")
     low:          np.dtype = np.dtype("float64")
