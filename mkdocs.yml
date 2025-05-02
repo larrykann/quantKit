@@ -4,7 +4,8 @@ repo_url: https://github.com/larrykann/quantKit
 nav:
   - Home: index.md
   - API Reference:
-    - Data:
+    - Data: 
+      - Overview: reference/quantKit.data.md
       - DataContainer: reference/quantKit.data.container.md
       - Schemas: reference/quantKit.data.schemas.md
       - Validation: reference/quantKit.data.validation.md
