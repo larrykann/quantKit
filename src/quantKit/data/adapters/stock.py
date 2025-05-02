@@ -4,7 +4,7 @@ Stock‐price data adapters.
 
 This module defines:
 - StockPriceDatasetAdapter: abstract interface for any stock‐price adapter.
-- BaseStockAdapter:       concrete base class that fetches one series and splits it.
+- BaseStockAdapter: concrete base class that fetches one series and splits it.
 """
 
 __all__ = [

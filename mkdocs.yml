@@ -8,8 +8,7 @@ nav:
       - DataContainer: reference/quantKit.data.container.md
       - Schemas: reference/quantKit.data.schemas.md
       - Validation: reference/quantKit.data.validation.md
-      - Adapters:
-        - BaseAdapter: reference/quantKit.data.adapters.base.md
+      - Adapters: reference/quantKit.data.adapters.md
     - Stochastics:
       - Utils: reference/quantKit.stochastic.utils.md
 
