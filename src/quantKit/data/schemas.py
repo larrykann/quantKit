@@ -2,6 +2,14 @@
 
 Defines core data schemas for DataContainer outputs.
 
+These schemas establish standard field names and appropriate data types
+for common financial datasets, enabling:
+
+1. Consistent field naming across data sources
+2. Automatic type validation
+3. Interoperability between data adapters
+4. Clear expectations for model inputs/outputs
+
 Each schema maps field names to NumPy dtypes. Adapters must validate
 DataContainer contents against these schemas.
 """

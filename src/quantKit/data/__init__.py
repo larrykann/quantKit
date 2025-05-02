@@ -3,13 +3,24 @@ quantKit.data
 
 Core data handling facilities for financial time series.
 
-Primary components:
-    
-- container: Time series storage with numpy backend
-- schemas: Standard data schemas for market data
-- validation: Schema validation utilities
-- generators: Synthetic data generators
-- adapters: Data source connectors (APIs, files, etc.)
+This package provides comprehensive tools for working with financial data:
+
+- **container**: Time series storage with numpy backend for efficient manipulation
+- **schemas**: Standard data schemas for market data (trades, bars, daily data)
+- **validation**: Schema validation utilities to ensure data integrity
+- **generators**: Synthetic data generators for testing and development
+- **adapters**: Data source connectors for various APIs, files, and data providers
+
+The design philosophy of quantKit.data centers around the DataContainer class,
+which provides a timestamp-indexed storage mechanism that maintains type safety
+through schema validation while offering numpy-backed performance.
+
+Typical workflow:
+
+1. Load data through an adapter or generate synthetic data
+2. Validate against standard schemas
+3. Process and analyze using numpy operations
+4. Split into training/validation sets for model development
 """
 
 # Only expose the high-level modules, not individual classes
