@@ -33,6 +33,9 @@ nav:
       - Schemas: reference/quantKit.data.schemas.md
       - Validation: reference/quantKit.data.validation.md
       - Adapters: reference/quantKit.data.adapters.md
+    - Financial:
+      - Interest: reference/quantKit.financial.interest.md
+      - Returns: reference/quantKit.financial.returns.md
     - Stochastics:
       - Utils: reference/quantKit.stochastic.utils.md
 
