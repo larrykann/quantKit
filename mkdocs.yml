@@ -26,6 +26,14 @@ extra_css:
 
 nav:
   - Home: index.md
+  - Mathmatical Foundations:
+    - Overview: foundations/index.md
+    - Finance Fundamentals:
+      - Simple Interest: foundations/finance/simple-interest.md
+      - Discrete Compound Interest: foundations/finance/discrete-compound-interest.md
+      - Continuous Compound Interest: foundations/finance/continuous-compound-interest.md
+      - Returns Theory: foundations/finance/returns.md
+    - Probability & Statistics:
   - API Reference:
     - Data: 
       - Overview: reference/quantKit.data.md
