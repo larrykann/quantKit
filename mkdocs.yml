@@ -36,26 +36,29 @@ extra_javascript:
 
 nav:
   - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quickstart: getting-started/quickstart.md
+  - User Guide:
+    - Importing Data: user-guide/importing-data.md
+    - Binary Files: user-guide/working-with-binary-files.md
+    - Strategies: user-guide/strategies.md
+  - Technical Guides:
+    - Binary Format Specification: technical-guides/binary-format-spec.md
+    - Datetime Deepdive: technical-guides/datetime-deepdive.md
+    - Performance Tips: technical-guides/performance-tips.md
   - Mathematical Foundations:
-    - Overview: foundations/index.md
-    - Finance Fundamentals:
+    - Finance:
       - Simple Interest: foundations/finance/simple-interest.md
-      - Discrete Compound Interest: foundations/finance/discrete-compound-interest.md
-      - Continuous Compound Interest: foundations/finance/continuous-compound-interest.md
-      - Returns Theory: foundations/finance/returns.md
+      - Returns: foundations/finance/simple-returns.md
   - API Reference:
-    - Data: 
-      - Overview: reference/quantKit.data.md
-      - DataContainer: reference/quantKit.data.container.md
-      - Schemas: reference/quantKit.data.schemas.md
-      - Validation: reference/quantKit.data.validation.md
-      - Adapters: reference/quantKit.data.adapters.md
+    - Data:
+      - Schemas: reference/data/quantKit.data.schemas.md
     - Financial:
-      - Interest: reference/quantKit.financial.interest.md
-      - Returns: reference/quantKit.financial.returns.md
-    - Stochastics:
-      - Utils: reference/quantKit.stochastic.utils.md
-
+      - Interest: reference/financial/quantKit.financial.interest.md
+      - Returns: reference/financial/quantKit.financial.returns.md
+    - Stochastic:
+      - Utils: reference/stochastic/quantKit.stochastic.utils.md
 plugins:
   - search
   - mkdocstrings:
