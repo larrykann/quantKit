@@ -1,6 +1,6 @@
-numpy==1.26.4
-
-rich==13.7.0
-
-mkdocs==1.6.0
-mkdocs-material==9.5.10
+numpy>=2.0.0,<3.0
+numba>=0.60.0,<1.0
+rich>=13.7.0,<14.0
+mkdocs>=1.6.0,<2.0
+mkdocs-material>=9.5.0,<10.0
+mkdocstrings[python]>=0.24.0,<1.0
