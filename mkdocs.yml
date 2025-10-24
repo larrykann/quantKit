@@ -51,6 +51,9 @@ nav:
     - Finance:
       - Simple Interest: foundations/finance/simple-interest.md
       - Returns: foundations/finance/simple-returns.md
+      - Multiperiod Simple Returns: foundations/finance/multiperiod-simple-returns.md
+      - Discrete Compound Interest: foundations/finance/discrete-compound-interest.md
+      - Continuous Compound Interest: foundations/finance/continuous-compound-interest.md
   - API Reference:
     - Data:
       - Schemas: reference/data/quantKit.data.schemas.md
