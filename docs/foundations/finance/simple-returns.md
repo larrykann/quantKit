@@ -7,6 +7,7 @@
 $$R_t = \frac{S_t - S_{t-1}}{S_{t-1}} = \frac{S_t}{S_{t-1}} - 1$$
 
 where:
+
 - $R_t$ = Simple return at time $t$
 - $S_t$ = Asset price at time $t$
 - $S_{t-1}$ = Asset price at time $t-1$
@@ -36,66 +37,10 @@ $$R_{Friday} = \frac{159 - 150}{150} = \frac{9}{150} = 0.06 = 6\%$$
 This represents a 6% gain over the holding period.
 
 **Quarterly return example:**
+
 - Q1 ending price: $200
 - Q4 ending price: $185
 - Quarterly return: $\frac{185 - 200}{200} = -0.075 = -7.5\%$
-
-## Implementation Examples
-
-### Python
-
-```python
-def calculate_simple_return(current_price, previous_price):
-    """Calculate simple return between two price points"""
-    return (current_price - previous_price) / previous_price
-
-def calculate_periodic_returns(prices, period=1):
-    """Calculate returns for a series of prices with specified period"""
-    returns = []
-    
-    for i in range(period, len(prices)):
-        current_price = prices[i]
-        previous_price = prices[i - period]
-        return_value = calculate_simple_return(current_price, previous_price)
-        returns.append(return_value)
-    
-    return returns
-
-def analyze_returns(prices, labels=None):
-    """Analyze returns for different time periods"""
-    periods = {'Daily': 1, 'Weekly': 5, 'Monthly': 22}
-    
-    if labels is None:
-        labels = [f"Day_{i}" for i in range(len(prices))]
-    
-    print("Return Analysis:")
-    print("-" * 40)
-    
-    for period_name, period_length in periods.items():
-        if len(prices) > period_length:
-            returns = calculate_periodic_returns(prices, period_length)
-            avg_return = sum(returns) / len(returns) if returns else 0
-            print(f"{period_name:8} Average Return: {avg_return:8.4f} ({avg_return*100:6.2f}%)")
-
-# Example usage
-stock_prices = [100.0, 102.5, 98.0, 105.0, 103.2, 107.8, 110.5]
-daily_returns = calculate_periodic_returns(stock_prices, 1)
-
-print("Stock Prices:", stock_prices)
-print("Daily Returns:", [f"{r:.4f}" for r in daily_returns])
-print()
-
-analyze_returns(stock_prices)
-
-# Compare with simple interest return
-principal = 1000.0
-interest_rate = 0.05
-time_period = 1.0
-simple_interest_return = interest_rate * time_period
-
-print(f"\nSimple Interest Return (5% for 1 year): {simple_interest_return:.4f}")
-print(f"Equivalent to: {simple_interest_return*100:.2f}%")
-```
 
 ## Return vs. Interest Rate Comparison
 

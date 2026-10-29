@@ -7,6 +7,7 @@
 $$A = P(1 + rt)$$
 
 where:
+
 - $A$ = Final amount after interest
 - $P$ = Principal (original amount invested)
 - $r$ = Annual interest rate (expressed as decimal)
@@ -26,32 +27,6 @@ Consider investing $5,000 in a simple interest certificate of deposit at 4% annu
 $$A = 5,000(1 + 0.04 \times 2) = 5,000(1.08) = \$5,400$$
 
 Total interest earned: $400 ($5,000 × 0.04 × 2)
-
-## Implementation Examples
-
-### Python
-
-```python
-def calculate_simple_interest(principal, rate, time):
-   """Calculate final amount using simple interest formula"""
-   return principal * (1 + rate * time)
-
-def simple_interest_earned(principal, rate, time):
-   """Calculate just the interest portion"""
-   return principal * rate * time
-
-# Example usage
-principal = 5000.0
-annual_rate = 0.04
-years = 2.0
-
-final_amount = calculate_simple_interest(principal, annual_rate, years)
-interest_earned = simple_interest_earned(principal, annual_rate, years)
-
-print(f"Principal: ${principal:,.2f}")
-print(f"Interest earned: ${interest_earned:,.2f}")
-print(f"Final amount: ${final_amount:,.2f}")
-```
 
 ## Modern Applications
 

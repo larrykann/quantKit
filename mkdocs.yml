@@ -48,12 +48,34 @@ nav:
     - Datetime Deepdive: technical-guides/datetime-deepdive.md
     - Performance Tips: technical-guides/performance-tips.md
   - Mathematical Foundations:
+    - Overview: foundations/index.md
     - Finance:
-      - Simple Interest: foundations/finance/simple-interest.md
-      - Returns: foundations/finance/simple-returns.md
-      - Multiperiod Simple Returns: foundations/finance/multiperiod-simple-returns.md
-      - Discrete Compound Interest: foundations/finance/discrete-compound-interest.md
-      - Continuous Compound Interest: foundations/finance/continuous-compound-interest.md
+      - Overview: foundations/finance/index.md
+      - Returns:
+        - Simple Returns: foundations/finance/simple-returns.md
+        - Logarithmic Returns: foundations/finance/logarithmic-returns.md
+        - Multiperiod Simple Returns: foundations/finance/multiperiod-simple-returns.md
+      - Interest:
+        - Simple Interest: foundations/finance/simple-interest.md
+        - Discrete Compound Interest: foundations/finance/discrete-compound-interest.md
+        - Continuous Compound Interest: foundations/finance/continuous-compound-interest.md
+    - Probability:
+      - Overview: foundations/probability/index.md
+      - Random Expirements: foundations/probability/random-experiments.md
+      - Sample Space: foundations/probability/sample-space.md
+      - Events: foundations/probability/events.md
+      - Probability Definitions:
+        - Classical Definition: foundations/probability/classical-definition.md
+        - Limiting Ratio Definition: foundations/probability/limiting-ratio-definition.md
+        - Practical Estimation: foundations/probability/practical-estimation.md
+      - Random Variables: 
+        - Overview: foundations/probability/random-variables.md
+        - Discrete Random Variables: foundations/probability/discrete-random-variables.md
+        - Continuous Random Variables: foundations/probability/continuous-random-variables.md
+      - Probability Functions:
+        - Probability Mass Function: foundations/probability/pmf.md
+        - Probability Density Function: foundations/probability/pdf.md
+        - Cumulative Distribution Function: foundations/probability/cdf.md
   - API Reference:
     - Data:
       - Schemas: reference/data/quantKit.data.schemas.md
